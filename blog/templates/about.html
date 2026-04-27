@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main id="main-content">
+    <section class="section">
+        <div class="container">
+
+            <div class="section-header fade-in visible">
+                <h2>💡 About Floting Blog</h2>
+                <p class="subtitle">The story behind the platform</p>
+                <div class="divider-boho">✦</div>
+            </div>
+
+            <div class="form-container fade-in visible" style="text-align:center;">
+                <p class="handwritten" style="font-size:1.8rem; color:var(--accent); margin-bottom:20px;">
+                    "Where words find their wings."
+                </p>
+                
+                <p style="margin-bottom:20px;">
+                    <strong>Floting Blog</strong> is a dynamic content management platform designed for storytellers.
+                </p>
+
+                <p style="margin-bottom:30px;">
+                    <strong>Technology should feel human.</strong>
+                </p>
+
+                <div class="divider-boho">✦</div>
+
+                <h3 style="margin-top:30px;">✨ Platform Features</h3>
+
+                <ul style="list-style:none; text-align:left; max-width:450px; margin:0 auto;">
+                    <li>🌿 Effortless Creation</li>
+                    <li>📝 Real-time Management</li>
+                    <li>📋 Organized Archive</li>
+                    <li>🌙 Light/Dark Mode</li>
+                    <li>📱 Responsive Design</li>
+                </ul>
+
+                <div style="margin-top:30px;">
+                    <a href="{% url 'add-blog' %}" class="btn btn-primary">
+                        Start Your Story
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</main>
+{% endblock %}

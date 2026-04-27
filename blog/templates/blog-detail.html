@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="section">
+    <div class="container" style="max-width:800px;">
+
+        <h1>{{ post.title }}</h1>
+
+        <p style="color:gray; margin-bottom:20px;">
+            {{ post.author }} • {{ post.created_at|date:"M d, Y" }}
+        </p>
+
+        {% if post.image %}
+            <img src="{{ post.image.url }}" style="width:100%; border-radius:10px; margin-bottom:20px;">
+        {% endif %}
+
+        <p style="line-height:1.8;">
+            {{ post.content }}
+        </p>
+
+        <br>
+
+        <a href="{% url 'home' %}" class="btn btn-outline">⬅ Back</a>
+
+    </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+    <main id="main-content">
+        <section class="section">
+            <div class="container">
+                <div class="section-header fade-in visible">
+                    <h2>📝 Edit Blog Post</h2>
+                    <p class="subtitle" id="editPageSubtitle">Select a post below to begin editing</p>
+                    <div class="divider-boho">✦</div>
+                </div>
+
+                <div class="card-grid" id="editPostGrid">
+                    </div>
+                
+                <div class="empty-state" id="editEmptyState" style="display:none;">
+                    <div class="empty-icon">📭</div>
+                    <h3>No posts to edit</h3>
+                    <p>Create a new post first, then come back here.</p>
+                    <a href="add-blog.html" class="btn btn-primary" style="margin-top:15px;">✍️ Create Post</a>
+                </div>
+
+                <div class="form-container fade-in" id="editFormContainer" style="display:none;">
+                    <h3 style="margin-bottom:20px;">Editing: <span id="editFormTitleDisplay" style="color:var(--accent);"></span></h3>
+                    <form id="editBlogForm" novalidate>
+                        <input type="hidden" id="editBlogId" name="id">
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editBlogTitle">Post Title *</label>
+                                <input type="text" id="editBlogTitle" name="title" required maxlength="150">
+                            </div>
+                            <div class="form-group">
+                                <label for="editBlogAuthor">Author Name *</label>
+                                <input type="text" id="editBlogAuthor" name="author" required maxlength="80">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editBlogCategory">Category</label>
+                                <select id="editBlogCategory" name="category">
+                                    <option value="Lifestyle">Lifestyle</option>
+                                    <option value="Travel">Travel</option>
+                                    <option value="Wellness">Wellness</option>
+                                    <option value="Creativity">Creativity</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Food">Food & Recipes</option>
+                                    <option value="Personal">Personal Stories</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editBlogImage">Cover Image URL</label>
+                                <input type="url" id="editBlogImage" name="imageUrl">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editBlogExcerpt">Short Excerpt *</label>
+                            <input type="text" id="editBlogExcerpt" name="excerpt" required maxlength="200">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editBlogContent">Full Content *</label>
+                            <textarea id="editBlogContent" name="content" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editBlogTags">Tags (comma-separated)</label>
+                            <input type="text" id="editBlogTags" name="tags">
+                        </div>
+
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                            <button type="button" class="btn btn-outline" onclick="cancelEdit()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <span>© 2026 Floting Blog. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+{% endblock %}

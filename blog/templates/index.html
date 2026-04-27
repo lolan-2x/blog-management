@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main id="main-content">
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to <span class="accent-word">Floting Blog</span></h1>
+            <p>A multi-page experience for your stories.</p>
+            <a href="{% url 'add-blog' %}" class="btn btn-primary">Start Writing</a>
+        </div>
+    </section>
+
+    <!-- BLOG LIST SECTION -->
+    <section class="section">
+        <div class="container">
+
+            <div class="section-header">
+                <h2>📝 Latest Blogs</h2>
+                <p class="subtitle">Explore all published posts</p>
+                <div class="divider-boho">✦</div>
+            </div>
+
+            <div class="blog-grid">
+
+                {% for post in posts %}
+
+                <div class="card" style="cursor:pointer;"
+                     onclick="window.location.href='{% url "blog-detail" post.id %}'">
+
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="card-image" alt="{{ post.title }}">
+                    {% endif %}
+
+                    <div class="card-body">
+
+                        <span class="card-category">{{ post.category }}</span>
+
+                        <h3 class="card-title">{{ post.title }}</h3>
+
+                        <p class="card-excerpt">
+                            {{ post.excerpt|truncatewords:15 }}
+                        </p>
+
+                        <p style="font-size:12px; color: var(--text-muted); margin-top:10px;">
+                            {{ post.created_at|date:"M d, Y" }}
+                        </p>
+
+                        <!-- READ MORE BUTTON -->
+                        <a href="{% url 'blog-detail' post.id %}" 
+                           class="btn btn-outline btn-sm"
+                           onclick="event.stopPropagation();">
+                            Read More →
+                        </a>
+
+                    </div>
+
+                </div>
+
+                {% empty %}
+                    <p>No blogs available</p>
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}

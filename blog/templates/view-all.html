@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+<main id="main-content">
+    <section class="section">
+        <div class="container">
+
+            <div class="section-header fade-in visible">
+                <h2>📋 All Submissions</h2>
+                <p class="subtitle">Browse and manage every post</p>
+                <div class="divider-boho">✦</div>
+            </div>
+
+            <p style="margin-bottom: 16px; color: var(--text-muted);">
+                Showing <span class="highlight-count">{{ posts|length }}</span> post(s)
+            </p>
+
+            <div class="table-wrapper fade-in visible">
+                <table id="blogTable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Image</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for post in posts %}
+                        <tr>
+                            <td><strong>{{ post.title }}</strong></td>
+
+                            <td>
+                                {{ post.content|truncatewords:10 }}
+                            </td>
+
+                            <td>
+                                {% if post.image %}
+                                <img src="{{ post.image.url }}" width="80">
+                                {% else %}
+                                No Image
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ post.created_at|date:"Y-m-d" }}
+                            </td>
+
+                            <td>
+                                <div class="action-buttons">
+
+                                    <a href="{% url 'blog-detail' post.id %}" class="btn btn-sm">
+                                        👁 View
+                                    </a>
+
+                                    {% if post.user == request.user %}
+                                    <a href="{% url 'edit-blog' post.id %}" class="btn btn-outline btn-sm">
+                                        ✏️ Edit
+                                    </a>
+
+                                    <a href="{% url 'delete-blog' post.id %}" class="btn btn-danger btn-sm">
+                                        🗑️ Delete
+                                    </a>
+                                    {% endif %}
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">No posts found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <span>© 2026 Floting Blog. All rights reserved.</span>
+        </div>
+    </div>
+</footer>
+
+{% endblock %}

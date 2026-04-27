@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<main id="main-content">
+    <section class="section">
+        <div class="container">
+
+            <div class="section-header fade-in visible">
+                <h2>🔐 Login</h2>
+                <p class="subtitle">Welcome back to your space</p>
+                <div class="divider-boho">✦</div>
+            </div>
+
+            <div class="form-container fade-in visible">
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" id="username"
+                               placeholder="Enter your username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password"
+                               placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        🔓 Login
+                    </button>
+
+                    <!-- ERROR MESSAGE -->
+                    {% if error %}
+                    <div id="errorMsg" style="
+                        background:#ff4d4d;
+                        color:white;
+                        padding:10px;
+                        border-radius:6px;
+                        margin-top:10px;
+                        text-align:center;
+                    ">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                </form>
+
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<!-- SCRIPT OUTSIDE FORM -->
+<script>
+setTimeout(() => {
+    const msg = document.getElementById('errorMsg');
+    if (msg) {
+        msg.style.transition = "opacity 0.5s";
+        msg.style.opacity = "0";
+        setTimeout(() => msg.remove(), 500);
+    }
+}, 3000);
+</script>
+
+{% endblock %}

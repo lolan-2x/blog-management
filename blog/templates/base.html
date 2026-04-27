@@ -1,0 +1,186 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <link rel="stylesheet" href='{% static "css/style.css"%}'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Lora:wght@400;600;700&family=Nunito+Sans:wght@200;1000&display=swap"
+        rel="stylesheet">
+
+    <title>Home | Floting Blog</title>
+</head>
+
+<body>
+    <nav class="nav-bar">
+        <div class="nav-inner">
+            <a href="{% url 'home' %}" class="nav-logo"><span class="logo-text">Floting Blog</span></a>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}" class="active">Home</a></li>
+                <li><a href="{% url 'add-blog' %}">Add Blog</a></li>
+                <li><a href="{% url 'view-all' %}">All Blogs</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+            </ul>
+            <div class="nav-actions">
+                {% if user.is_authenticated %}
+                <span style="margin-right:8px;">👤 {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn-icon">🚪</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn-icon" alt="Login">🔐</a>
+                {% endif %}
+
+                <button class="btn-icon" id="themeToggle">🌙</button>
+
+                
+            </div>
+        </div>
+    </nav>
+
+
+    {% block content %}
+    {% endblock %}
+
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        let posts = [];
+        const grid = document.getElementById('editPostGrid');
+        const formContainer = document.getElementById('editFormContainer');
+        const emptyState = document.getElementById('editEmptyState');
+
+        function init() {
+            const raw = localStorage.getItem('flotingBlog_posts');
+            posts = raw ? JSON.parse(raw) : [];
+
+            // Check if we were sent here with a specific ID from the view-all page
+            const specificId = localStorage.getItem('editing_post_id');
+
+            if (specificId) {
+                openEditor(specificId);
+                // Clear the ID so if they refresh they see the grid again
+                localStorage.removeItem('editing_post_id');
+            } else {
+                renderSelectionGrid();
+            }
+        }
+
+        function renderSelectionGrid() {
+            if (posts.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            formContainer.style.display = 'none';
+            document.getElementById('editPageSubtitle').textContent = "Select a post below to begin editing";
+
+            grid.innerHTML = posts.map(post => `
+                <div class="card" onclick="openEditor('${post.id}')" style="cursor:pointer">
+                    <img class="card-image" src="${post.imageUrl}" alt="${post.title}">
+                    <div class="card-body">
+                        <span class="card-category">${post.category}</span>
+                        <h3 class="card-title">${post.title}</h3>
+                        <button class="btn btn-outline btn-sm" style="width:100%; margin-top:10px;">✏️ Edit This Post</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openEditor(id) {
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+
+            grid.style.display = 'none';
+            formContainer.style.display = 'block';
+            formContainer.classList.add('visible');
+            document.getElementById('editPageSubtitle').textContent = "Refining your masterpiece";
+
+            // Fill form
+            document.getElementById('editBlogId').value = post.id;
+            document.getElementById('editBlogTitle').value = post.title;
+            document.getElementById('editBlogAuthor').value = post.author;
+            document.getElementById('editBlogCategory').value = post.category;
+            document.getElementById('editBlogImage').value = post.imageUrl;
+            document.getElementById('editBlogExcerpt').value = post.excerpt;
+            document.getElementById('editBlogContent').value = post.content;
+            document.getElementById('editBlogTags').value = post.tags;
+            document.getElementById('editFormTitleDisplay').textContent = post.title;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            renderSelectionGrid();
+        }
+
+        document.getElementById('editBlogForm').onsubmit = (e) => {
+            e.preventDefault();
+            const id = document.getElementById('editBlogId').value;
+            const index = posts.findIndex(p => p.id === id);
+
+            if (index !== -1) {
+                posts[index] = {
+                    ...posts[index],
+                    title: document.getElementById('editBlogTitle').value,
+                    author: document.getElementById('editBlogAuthor').value,
+                    category: document.getElementById('editBlogCategory').value,
+                    imageUrl: document.getElementById('editBlogImage').value,
+                    excerpt: document.getElementById('editBlogExcerpt').value,
+                    content: document.getElementById('editBlogContent').value,
+                    tags: document.getElementById('editBlogTags').value
+                };
+
+                localStorage.setItem('flotingBlog_posts', JSON.stringify(posts));
+                alert("💾 Changes saved successfully!");
+                window.location.href = '{% url "view-all" %}';
+            }
+        };
+
+        init();
+    </script>
+
+    <script>
+        const addBlogForm = document.getElementById('addBlogForm');
+
+        addBlogForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(addBlogForm);
+            const newPost = {
+                id: 'post_' + Date.now(),
+                title: formData.get('title').trim(),
+                author: formData.get('author').trim(),
+                category: formData.get('category'),
+                imageUrl: formData.get('imageUrl').trim() || "https://picsum.photos/800/400?random=1",
+                excerpt: formData.get('excerpt').trim(),
+                content: formData.get('content').trim(),
+                tags: formData.get('tags').trim(),
+                date: new Date().toISOString()
+            };
+
+            if (!newPost.title || !newPost.author || !newPost.content) {
+                alert("Please fill in the required fields.");
+                return;
+            }
+
+            // Get existing posts from storage
+            const raw = localStorage.getItem('flotingBlog_posts');
+            const posts = raw ? JSON.parse(raw) : [];
+
+            // Add new post to the top
+            posts.unshift(newPost);
+
+            // Save back to storage
+            localStorage.setItem('flotingBlog_posts', JSON.stringify(posts));
+
+            alert("✨ Post published successfully!");
+            window.location.href = '{% url "view-all" %}'; // Redirect to see the list
+        });
+    </script>
+
+</body>
+
+</html>
